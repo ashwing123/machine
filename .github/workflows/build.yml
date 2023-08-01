@@ -44,7 +44,8 @@ jobs:
           githubToken: ${{ github.token }}
 
           install: |
-            apt-get -y update
+            apt-get -y update;
+            apt-get install -q -y git golang-go;
             apt-get install -y golang make
           run: |
             make
