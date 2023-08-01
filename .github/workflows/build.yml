@@ -3,8 +3,8 @@ on:
   pull_request:
 name: build
 jobs:
-  build:
-    name: build
+  build-amd64:
+    name: build-amd64
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
@@ -25,6 +25,35 @@ jobs:
           name: binaries
           path: bin/
           if-no-files-found: error
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: bin/machine*
+  
+  build-arm64:
+    name: build-arm64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: uraimo/run-on-arch-action@v2
+      with:
+        arch: aarch64
+        distro: ubuntu22.04
+
+        githubToken: ${{ github.token }}
+
+        install: |
+          apt-get -y update
+          apt-get install -y golang make
+
+      - name: Make machine binaries
+        run: |
+          make
+      - name: Rename arm64 binaries
+        run: |
+          mv bin/machine bin/machine-arm64
+          mv bin/machined bin/machined-arm64
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
