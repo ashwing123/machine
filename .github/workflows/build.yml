@@ -37,15 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: uraimo/run-on-arch-action@v2
-      with:
-        arch: aarch64
-        distro: ubuntu22.04
+        with:
+          arch: aarch64
+          distro: ubuntu22.04
 
-        githubToken: ${{ github.token }}
+          githubToken: ${{ github.token }}
 
-        install: |
-          apt-get -y update
-          apt-get install -y golang make
+          install: |
+            apt-get -y update
+            apt-get install -y golang make
 
       - name: Make machine binaries
         run: |
